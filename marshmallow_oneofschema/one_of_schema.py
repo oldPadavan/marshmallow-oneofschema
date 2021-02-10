@@ -63,6 +63,9 @@ class OneOfSchema(Schema):
         """Returns name of object schema"""
         return obj.__class__.__name__
 
+    def get_data_type(self, data):
+        raise NotImplementedError()
+
     def dump(self, obj, *, many=None, **kwargs):
         errors = {}
         result_data = []
@@ -151,6 +154,9 @@ class OneOfSchema(Schema):
         unknown = unknown or self.unknown
 
         data_type = data.get(self.type_field)
+        if not data_type:
+            data_type = self.get_data_type(data)
+
         if self.type_field in data and self.type_field_remove:
             data.pop(self.type_field)
 
