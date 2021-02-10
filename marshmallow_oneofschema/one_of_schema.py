@@ -105,7 +105,7 @@ class OneOfSchema(Schema):
         schema.context.update(getattr(self, "context", {}))
 
         result = schema.dump(obj, many=False, **kwargs)
-        if result is not None:
+        if result is not None and not self.type_field_remove:
             result[self.type_field] = obj_type
         return result
 
@@ -154,7 +154,7 @@ class OneOfSchema(Schema):
         if self.type_field in data and self.type_field_remove:
             data.pop(self.type_field)
 
-        if not data_type:
+        if not data_type and not self.type_field_remove:
             raise ValidationError(
                 {self.type_field: ["Missing data for required field."]}
             )
